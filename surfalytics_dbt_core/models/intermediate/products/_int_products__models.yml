@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: int_products__supply_costs
+    description: >
+      Product supply cost structure aggregated from bill of materials.
+      One row per product with total costs and supply counts.
+      Used for profitability analysis in product marts.
+    columns:
+      - name: sku
+        description: Product SKU code (primary key)
+        data_tests:
+          - unique
+          - not_null
+
+      - name: total_supply_cost
+        description: Total cost of all supplies needed for this product
+        data_tests:
+          - not_null
+
+      - name: perishable_cost
+        description: Total cost of perishable supplies (ingredients)
+
+      - name: non_perishable_cost
+        description: Total cost of non-perishable supplies (packaging, cutlery)
+
+      - name: num_supplies
+        description: Total number of supply items required for this product
+        data_tests:
+          - not_null
+
+      - name: num_perishable_supplies
+        description: Count of perishable supply items
+
+      - name: num_non_perishable_supplies
+        description: Count of non-perishable supply items

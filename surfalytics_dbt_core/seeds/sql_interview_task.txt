@@ -1,0 +1,45 @@
+Tables with columns
+
+campaigns
+- campaign_id STRING (PK)
+- campaign_name STRING
+- channel STRING — e.g., Paid Search, Paid Social, Display
+- status STRING — active, paused, ended
+
+ad_performance
+- day DATE
+- campaign_id STRING (FK → campaigns.campaign_id)
+- impressions INT
+- clicks INT
+- conversions INT
+- spend NUMERIC
+- revenue NUMERIC
+
+---
+
+Task
+
+Between 2025-06-01 and 2025-08-31, create a channel-level performance report for active campaigns only.
+
+Include the following fields:
+- channel
+- total impressions
+- total clicks
+- total conversions
+- total spend
+- total revenue
+- ctr (click-through rate)
+- cpc (cost per click)
+- cpa (cost per acquisition)
+- roas (return on ad spend)
+- performance_category
+
+Performance categories:
+- "High" if ROAS ≥ 3
+- "Low" if ROAS < 1
+- "Medium" otherwise
+
+Constraints:
+- Exclude the Display channel.
+- Only include rows with at least 100,000 impressions and 5,000 spend.
+- Order the results by ROAS in descending order.

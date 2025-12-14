@@ -1,0 +1,292 @@
+version: 2
+
+models:
+  - name: products
+    description: >
+      **Product Dimension Table**
+
+      The definitive product catalog enriched with cost structure and profitability metrics.
+      Combines product master data with supply chain costs to enable margin analysis.
+
+      **Grain**: One row per product SKU
+
+      **Use Cases**:
+      - Product profitability analysis
+      - Pricing strategy
+      - Menu optimization
+      - Supply cost management
+    meta:
+      owner: analytics
+      domain: product_analytics
+    columns:
+      - name: sku
+        description: Stock keeping unit - unique product identifier (primary key)
+        data_tests:
+          - unique
+          - not_null
+
+      - name: product_name
+        description: Product display name
+        data_tests:
+          - not_null
+
+      - name: product_type
+        description: Product category (Jaffle or Beverage)
+        data_tests:
+          - not_null
+
+      - name: price
+        description: Product selling price in dollars
+        data_tests:
+          - not_null
+
+      - name: description
+        description: Product description text
+
+      - name: total_supply_cost
+        description: Total cost of all supplies needed to make this product
+        data_tests:
+          - not_null
+
+      - name: perishable_cost
+        description: Cost of perishable supplies (ingredients)
+
+      - name: non_perishable_cost
+        description: Cost of non-perishable supplies (packaging, cutlery)
+
+      - name: num_supplies
+        description: Total number of supply items required
+
+      - name: num_perishable_supplies
+        description: Count of perishable supply items
+
+      - name: num_non_perishable_supplies
+        description: Count of non-perishable supply items
+
+      - name: gross_margin
+        description: Gross profit margin percentage ((price - cost) / price)
+
+      - name: markup_percentage
+        description: Markup percentage ((price - cost) / cost)
+
+      - name: gross_profit_per_unit
+        description: Gross profit per unit in dollars (price - total_supply_cost)
+
+  - name: order_items
+    description: >
+      **Order Items Fact Table** (Incremental)
+
+      Comprehensive sales transaction fact table at the item level.
+      Includes product attributes, time dimensions, and profitability metrics.
+      Materialized incrementally for efficient processing of new orders.
+
+      **Grain**: One row per order line item
+
+      **Use Cases**:
+      - Detailed sales analysis
+      - Product mix analysis
+      - Time-series revenue analysis
+      - Profitability reporting
+    meta:
+      owner: analytics
+      domain: sales_analytics
+    columns:
+      - name: order_item_id
+        description: Unique identifier for each order item (primary key)
+        data_tests:
+          - unique
+          - not_null
+
+      - name: order_id
+        description: Foreign key to orders
+        data_tests:
+          - not_null
+
+      - name: sku
+        description: Product SKU code
+        data_tests:
+          - not_null
+
+      - name: customer_id
+        description: Customer who purchased this item
+        data_tests:
+          - not_null
+
+      - name: store_id
+        description: Store where item was purchased
+        data_tests:
+          - not_null
+
+      - name: ordered_at
+        description: Timestamp when item was ordered
+
+      - name: order_date
+        description: Date portion of ordered_at (for date-based aggregations)
+
+      - name: order_month
+        description: First day of month when ordered
+
+      - name: order_quarter
+        description: First day of quarter when ordered
+
+      - name: order_year
+        description: Year when ordered
+
+      - name: product_name
+        description: Name of product purchased
+
+      - name: product_type
+        description: Product category (Jaffle or Beverage)
+
+      - name: price
+        description: Product price at time of purchase
+
+      - name: total_supply_cost
+        description: Cost to produce this product
+
+      - name: gross_margin
+        description: Gross margin percentage for this product
+
+      - name: item_revenue
+        description: Revenue from this item (product price)
+
+      - name: item_profit
+        description: Gross profit from this item (revenue - cost)
+
+      - name: is_jaffle
+        description: Boolean flag indicating if product is a Jaffle
+
+      - name: is_beverage
+        description: Boolean flag indicating if product is a Beverage
+
+  - name: product_performance
+    description: >
+      **Product Performance Summary**
+
+      Aggregated product sales metrics and profitability analysis.
+      Ranks products by revenue and shows key performance indicators.
+
+      **Grain**: One row per product SKU
+
+      **Use Cases**:
+      - Product ranking and comparison
+      - Menu optimization decisions
+      - Inventory planning
+      - Marketing prioritization
+    meta:
+      owner: analytics
+      domain: product_analytics
+    columns:
+      - name: sku
+        description: Product SKU code (primary key)
+        data_tests:
+          - unique
+          - not_null
+
+      - name: product_name
+        description: Product display name
+
+      - name: product_type
+        description: Product category
+
+      - name: price
+        description: Product selling price
+
+      - name: total_supply_cost
+        description: Cost per unit
+
+      - name: gross_margin
+        description: Gross margin percentage
+
+      - name: total_items_sold
+        description: Total quantity sold across all time
+
+      - name: total_revenue
+        description: Total revenue generated by this product
+
+      - name: num_orders_containing_product
+        description: Number of distinct orders that included this product
+
+      - name: avg_items_per_order
+        description: Average quantity of this product per order
+
+      - name: first_sale_at
+        description: Timestamp of first sale of this product
+
+      - name: most_recent_sale_at
+        description: Timestamp of most recent sale
+
+      - name: total_cost
+        description: Total cost of goods sold (units * unit cost)
+
+      - name: total_profit
+        description: Total gross profit (revenue - total cost)
+
+      - name: revenue_rank
+        description: Product ranking by total revenue (1 = highest)
+
+  - name: sales_by_store_month
+    description: >
+      **Store Monthly Sales Performance**
+
+      Monthly sales aggregations by store with growth metrics and trends.
+      Includes month-over-month and year-over-year comparisons.
+
+      **Grain**: One row per store per month
+
+      **Use Cases**:
+      - Store performance tracking
+      - Geographic sales analysis
+      - Seasonality analysis
+      - Growth rate monitoring
+    meta:
+      owner: analytics
+      domain: sales_analytics
+    columns:
+      - name: store_id
+        description: Store identifier
+        data_tests:
+          - not_null
+
+      - name: store_name
+        description: Store location name
+        data_tests:
+          - not_null
+
+      - name: order_month
+        description: First day of the month for this sales period
+        data_tests:
+          - not_null
+
+      - name: total_orders
+        description: Number of orders placed at this store in this month
+
+      - name: total_revenue
+        description: Total revenue for this store-month
+
+      - name: total_tax_collected
+        description: Total tax collected
+
+      - name: avg_order_value
+        description: Average order value for this period
+
+      - name: store_opened_at
+        description: Date when store opened
+
+      - name: days_store_open_at_month_end
+        description: Number of days store had been open by month end
+
+      - name: cumulative_revenue
+        description: Running total of revenue for this store since opening
+
+      - name: prev_month_revenue
+        description: Revenue from previous month (for comparison)
+
+      - name: yoy_revenue
+        description: Revenue from same month in previous year
+
+      - name: mom_growth_rate
+        description: Month-over-month growth rate ((current - previous) / previous)
+
+      - name: yoy_growth_rate
+        description: Year-over-year growth rate ((current - last year) / last year)

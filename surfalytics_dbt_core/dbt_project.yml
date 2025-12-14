@@ -31,6 +31,44 @@ clean-targets:         # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   surfalytics_dbt_core:
-    # Config indicated by + and applies to all files under models/example/
+    # Legacy example models
     example:
       +materialized: view
+
+    # STAGING LAYER
+    # Light transformations, one model per source table
+    # Materialized as views for freshness
+    staging:
+      +materialized: view
+      +schema: staging
+      jaffle_shop:
+        +tags: ["staging", "jaffle_shop"]
+
+    # INTERMEDIATE LAYER
+    # Business logic, joins, reusable building blocks
+    # Materialized as views by default, tables for performance-critical models
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+      +tags: ["intermediate"]
+      orders:
+        +materialized: table  # Performance optimization for frequently-used models
+      customers:
+        int_customers__order_aggregates:
+          +materialized: table  # Performance optimization
+
+    # MARTS LAYER
+    # Business-facing analytics models
+    # Materialized as tables for query performance
+    marts:
+      +materialized: table
+      +tags: ["marts"]
+      customers:
+        +schema: customers
+      products:
+        +schema: products
+        order_items:
+          +materialized: incremental  # Incremental for large fact table
+seeds:
+  surfalytics_dbt_core:
+    +schema: raw_jaffle_shop
