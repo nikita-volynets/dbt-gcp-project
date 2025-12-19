@@ -1,0 +1,93 @@
+name: dbt CI - Pull Request Validation (Slim CI)
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate dbt Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      DBT_PROFILES_DIR: "."
+      DBT_PROJECT: "dbt-core-gcp-project"
+      DBT_DEV_SCHEMA: "analytics"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dbt
+        run: |
+          pip install --upgrade pip
+          pip install dbt-core dbt-bigquery
+
+      - name: Authenticate to GCP
+        run: |
+          echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > ${HOME}/gcp-key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcp-key.json" >> $GITHUB_ENV
+
+      - name: Download production manifest
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: cd.yml
+          name: dbt-prod-state
+          path: ./prod-state
+          if_no_artifact_found: warn
+        continue-on-error: true
+
+      - name: Check if prod state exists
+        id: check-state
+        run: |
+          if [ -f "./prod-state/manifest.json" ]; then
+            echo "state_exists=true" >> $GITHUB_OUTPUT
+            echo "✅ Production state found - will use Slim CI"
+          else
+            echo "state_exists=false" >> $GITHUB_OUTPUT
+            echo "⚠️  No production state found - will run full build"
+          fi
+
+      - name: Install dbt packages
+        run: dbt deps
+
+      - name: Load seed data (Slim CI)
+        if: steps.check-state.outputs.state_exists == 'true'
+        run: |
+          dbt seed --target dev --select state:modified --state ./prod-state || dbt seed --target dev
+
+      - name: Load seed data (Full build)
+        if: steps.check-state.outputs.state_exists == 'false'
+        run: dbt seed --target dev
+
+      - name: Build models and run tests (Slim CI)
+        if: steps.check-state.outputs.state_exists == 'true'
+        run: |
+          echo "🔍 Building only modified models and their downstream dependencies..."
+          dbt build --target dev --select state:modified+ --state ./prod-state
+
+      - name: Build models and run tests (Full build)
+        if: steps.check-state.outputs.state_exists == 'false'
+        run: |
+          echo "🔨 Running full build (no production state available)..."
+          dbt build --target dev
+
+      - name: Upload run artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-ci-run-artifacts
+          path: target/
+          retention-days: 7

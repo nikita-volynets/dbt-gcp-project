@@ -1,0 +1,46 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: detect-private-key
+      - id: check-yaml
+        args: ['--unsafe']
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+
+  - repo: https://github.com/dbt-checkpoint/dbt-checkpoint
+    rev: v2.0.7
+    hooks:
+      # Note: dbt-parse removed - doesn't work well with subdirectory dbt projects
+      # Syntax validation handled by SQLFluff instead
+      - id: check-script-semicolon
+        args: ["--manifest", "surfalytics_dbt_core/target/manifest.json"]
+      - id: check-script-has-no-table-name
+        args: ["--manifest", "surfalytics_dbt_core/target/manifest.json"]
+
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 3.4.2
+    hooks:
+      - id: sqlfluff-lint
+        additional_dependencies:
+          - 'sqlfluff-templater-dbt'
+          - 'dbt-bigquery==1.10.0'
+        args:
+          - --dialect
+          - bigquery
+          - --exclude-rules
+          - LT05,LT12
+        files: ^surfalytics_dbt_core/models/.*\.sql$
+
+      - id: sqlfluff-fix
+        additional_dependencies:
+          - 'sqlfluff-templater-dbt'
+          - 'dbt-bigquery==1.10.0'
+        args:
+          - --dialect
+          - bigquery
+          - --exclude-rules
+          - LT05,LT12
+        files: ^surfalytics_dbt_core/models/.*\.sql$

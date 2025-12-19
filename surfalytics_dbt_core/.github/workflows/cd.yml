@@ -1,0 +1,79 @@
+name: dbt CD - Production Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: cd-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      DBT_PROFILES_DIR: "."
+      DBT_PROJECT: "dbt-core-gcp-project"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dbt
+        run: |
+          pip install --upgrade pip
+          pip install dbt-core dbt-bigquery
+
+      - name: Authenticate to GCP
+        run: |
+          echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > ${HOME}/gcp-key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcp-key.json" >> $GITHUB_ENV
+
+      - name: Install dbt packages
+        run: dbt deps
+
+      - name: Load seed data
+        run: dbt seed --target prod
+
+      - name: Build all models and run all tests
+        run: |
+          echo "🚀 Running full production build..."
+          dbt build --target prod
+
+      - name: Generate documentation
+        run: dbt docs generate --target prod
+
+      - name: Upload production manifest for Slim CI
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-prod-state
+          path: target/manifest.json
+          retention-days: 90
+
+      - name: Upload documentation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-docs
+          path: |
+            target/manifest.json
+            target/catalog.json
+            target/index.html
+          retention-days: 30
+
+      - name: Upload run results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-prod-run-artifacts
+          path: target/
+          retention-days: 30
