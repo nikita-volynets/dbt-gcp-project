@@ -19,6 +19,10 @@ jobs:
       DBT_PROFILES_DIR: "."
       DBT_PROJECT: "dbt-core-gcp-project"
 
+    defaults:
+      run:
+        working-directory: surfalytics_dbt_core
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

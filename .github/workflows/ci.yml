@@ -20,6 +20,10 @@ jobs:
       DBT_PROJECT: "dbt-core-gcp-project"
       DBT_DEV_SCHEMA: "analytics"
 
+    defaults:
+      run:
+        working-directory: surfalytics_dbt_core
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
