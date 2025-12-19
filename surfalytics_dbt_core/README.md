@@ -486,6 +486,51 @@ Want to practice? Try adding:
 
 ---
 
+## 🚀 CI/CD & Automation
+
+This project includes automated workflows for continuous integration and deployment.
+
+### GitHub Actions Workflows
+
+**CI Workflow (Pull Requests)**
+- Triggers on pull requests to `main` branch
+- Uses **Slim CI** - only builds modified models and their downstream dependencies
+- Runs against `dev` target (dev_analytics dataset)
+- Validates changes before merge
+- Execution time: ~1-2 minutes for small changes
+
+**CD Workflow (Production Deployment)**
+- Triggers on merge to `main` branch
+- Runs full production build against `prod` target (analytics dataset)
+- Generates documentation
+- Uploads production manifest for future CI runs
+- Execution time: ~7-10 minutes
+
+### Pre-commit Hooks
+
+Pre-commit hooks run automatically before each commit to catch issues early:
+
+**Enabled Hooks:**
+- Security: Private key detection
+- File quality: Trailing whitespace, end-of-file fixes
+- YAML validation: Validates dbt YAML files
+- SQL linting: SQLFluff with BigQuery dialect
+- dbt best practices: No semicolons, enforce ref()/source()
+
+**Setup:**
+```bash
+# Install pre-commit
+pip install pre-commit sqlfluff sqlfluff-templater-dbt
+
+# Install hooks
+pre-commit install
+
+# Test on all files
+pre-commit run --all-files
+```
+
+---
+
 ## 📚 Resources
 
 ### Learn More About dbt
