@@ -1,0 +1,73 @@
+version: 2
+
+models:
+  - name: products
+    description: >
+      **Product Dimension Table**
+
+      The definitive product catalog enriched with cost structure and profitability metrics.
+      Combines product master data with supply chain costs to enable margin analysis.
+
+      **Grain**: One row per product SKU
+
+      **Use Cases**:
+      - Product profitability analysis
+      - Pricing strategy
+      - Menu optimization
+      - Supply cost management
+    meta:
+      owner: analytics
+      domain: product_analytics
+    columns:
+      - name: sku
+        description: Stock keeping unit - unique product identifier (primary key)
+        data_tests:
+          - unique
+          - not_null
+
+      - name: product_name
+        description: Product display name
+        data_tests:
+          - not_null
+
+      - name: product_type
+        description: Product category (Jaffle or Beverage)
+        data_tests:
+          - not_null
+
+      - name: price
+        description: Product selling price in dollars
+        data_tests:
+          - not_null
+
+      - name: description
+        description: Product description text
+
+      - name: total_supply_cost
+        description: Total cost of all supplies needed to make this product
+        data_tests:
+          - not_null
+
+      - name: perishable_cost
+        description: Cost of perishable supplies (ingredients)
+
+      - name: non_perishable_cost
+        description: Cost of non-perishable supplies (packaging, cutlery)
+
+      - name: num_supplies
+        description: Total number of supply items required
+
+      - name: num_perishable_supplies
+        description: Count of perishable supply items
+
+      - name: num_non_perishable_supplies
+        description: Count of non-perishable supply items
+
+      - name: gross_margin
+        description: Gross profit margin percentage ((price - cost) / price)
+
+      - name: markup_percentage
+        description: Markup percentage ((price - cost) / cost)
+
+      - name: gross_profit_per_unit
+        description: Gross profit per unit in dollars (price - total_supply_cost)

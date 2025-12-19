@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: stg_order_items
+    description: >
+      Staging model for order line items.
+      One row per item in an order, representing the product purchased.
+    columns:
+      - name: order_item_id
+        description: Unique identifier for each order item (primary key)
+        data_tests:
+          - unique
+          - not_null
+
+      - name: order_id
+        description: Foreign key to orders
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+
+      - name: sku
+        description: Foreign key to products (product SKU code)
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: sku
+
+      - name: _loaded_at
+        description: Timestamp when this record was loaded into staging

@@ -1,0 +1,68 @@
+version: 2
+
+models:
+  - name: sales_by_store_month
+    description: >
+      **Store Monthly Sales Performance**
+
+      Monthly sales aggregations by store with growth metrics and trends.
+      Includes month-over-month and year-over-year comparisons.
+
+      **Grain**: One row per store per month
+
+      **Use Cases**:
+      - Store performance tracking
+      - Geographic sales analysis
+      - Seasonality analysis
+      - Growth rate monitoring
+    meta:
+      owner: analytics
+      domain: sales_analytics
+    columns:
+      - name: store_id
+        description: Store identifier
+        data_tests:
+          - not_null
+
+      - name: store_name
+        description: Store location name
+        data_tests:
+          - not_null
+
+      - name: order_month
+        description: First day of the month for this sales period
+        data_tests:
+          - not_null
+
+      - name: total_orders
+        description: Number of orders placed at this store in this month
+
+      - name: total_revenue
+        description: Total revenue for this store-month
+
+      - name: total_tax_collected
+        description: Total tax collected
+
+      - name: avg_order_value
+        description: Average order value for this period
+
+      - name: store_opened_at
+        description: Date when store opened
+
+      - name: days_store_open_at_month_end
+        description: Number of days store had been open by month end
+
+      - name: cumulative_revenue
+        description: Running total of revenue for this store since opening
+
+      - name: prev_month_revenue
+        description: Revenue from previous month (for comparison)
+
+      - name: yoy_revenue
+        description: Revenue from same month in previous year
+
+      - name: mom_growth_rate
+        description: Month-over-month growth rate ((current - previous) / previous)
+
+      - name: yoy_growth_rate
+        description: Year-over-year growth rate ((current - last year) / last year)

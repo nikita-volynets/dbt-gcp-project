@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: >
+      Staging model for customer dimension data.
+      One row per customer with basic profile information.
+    columns:
+      - name: customer_id
+        description: Unique identifier for each customer (primary key)
+        data_tests:
+          - unique
+          - not_null
+
+      - name: customer_name
+        description: Customer full name
+        data_tests:
+          - not_null
+
+      - name: _loaded_at
+        description: Timestamp when this record was loaded into staging

@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: customer_ltv
+    description: >
+      **Customer Lifetime Value Analysis**
+
+      Customer lifetime value metrics and projections for repeat customers.
+      Includes only customers with 2+ orders to provide meaningful lifetime metrics.
+
+      **Grain**: One row per repeat customer
+
+      **Use Cases**:
+      - High-value customer identification
+      - Marketing ROI analysis
+      - Customer acquisition strategy
+      - Predictive lifetime value modeling
+    meta:
+      owner: analytics
+      domain: customer_analytics
+    columns:
+      - name: customer_id
+        description: Unique customer identifier
+        data_tests:
+          - unique
+          - not_null
+
+      - name: customer_name
+        description: Customer full name
+
+      - name: total_orders
+        description: Lifetime number of orders (minimum 2 for this table)
+
+      - name: ltv
+        description: Realized customer lifetime value (total revenue to date)
+        data_tests:
+          - not_null
+
+      - name: customer_lifetime_days
+        description: Days between first and most recent order
+
+      - name: avg_days_between_orders
+        description: Average number of days between consecutive orders
+
+      - name: predicted_ltv_12mo
+        description: Simple 12-month LTV projection based on historical spend rate
+
+      - name: first_order_at
+        description: Timestamp of customer's first order
+
+      - name: most_recent_order_at
+        description: Timestamp of customer's most recent order
+
+      - name: customer_segment
+        description: Customer value segment (High/Medium/Low Value)

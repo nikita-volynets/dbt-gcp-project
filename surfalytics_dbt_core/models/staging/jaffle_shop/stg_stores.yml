@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: stg_stores
+    description: >
+      Staging model for store location dimension.
+      One row per store with location details and tax rate.
+    columns:
+      - name: store_id
+        description: Unique identifier for each store (primary key)
+        data_tests:
+          - unique
+          - not_null
+
+      - name: store_name
+        description: Store location name (city)
+        data_tests:
+          - not_null
+
+      - name: opened_at
+        description: Timestamp when the store opened for business
+        data_tests:
+          - not_null
+
+      - name: tax_rate
+        description: Sales tax rate for this store location (decimal)
+        data_tests:
+          - not_null
+
+      - name: _loaded_at
+        description: Timestamp when this record was loaded into staging

@@ -1,0 +1,89 @@
+version: 2
+
+models:
+  - name: order_items
+    description: >
+      **Order Items Fact Table** (Incremental)
+
+      Comprehensive sales transaction fact table at the item level.
+      Includes product attributes, time dimensions, and profitability metrics.
+      Materialized incrementally for efficient processing of new orders.
+
+      **Grain**: One row per order line item
+
+      **Use Cases**:
+      - Detailed sales analysis
+      - Product mix analysis
+      - Time-series revenue analysis
+      - Profitability reporting
+    meta:
+      owner: analytics
+      domain: sales_analytics
+    columns:
+      - name: order_item_id
+        description: Unique identifier for each order item (primary key)
+        data_tests:
+          - unique
+          - not_null
+
+      - name: order_id
+        description: Foreign key to orders
+        data_tests:
+          - not_null
+
+      - name: sku
+        description: Product SKU code
+        data_tests:
+          - not_null
+
+      - name: customer_id
+        description: Customer who purchased this item
+        data_tests:
+          - not_null
+
+      - name: store_id
+        description: Store where item was purchased
+        data_tests:
+          - not_null
+
+      - name: ordered_at
+        description: Timestamp when item was ordered
+
+      - name: order_date
+        description: Date portion of ordered_at (for date-based aggregations)
+
+      - name: order_month
+        description: First day of month when ordered
+
+      - name: order_quarter
+        description: First day of quarter when ordered
+
+      - name: order_year
+        description: Year when ordered
+
+      - name: product_name
+        description: Name of product purchased
+
+      - name: product_type
+        description: Product category (Jaffle or Beverage)
+
+      - name: price
+        description: Product price at time of purchase
+
+      - name: total_supply_cost
+        description: Cost to produce this product
+
+      - name: gross_margin
+        description: Gross margin percentage for this product
+
+      - name: item_revenue
+        description: Revenue from this item (product price)
+
+      - name: item_profit
+        description: Gross profit from this item (revenue - cost)
+
+      - name: is_jaffle
+        description: Boolean flag indicating if product is a Jaffle
+
+      - name: is_beverage
+        description: Boolean flag indicating if product is a Beverage

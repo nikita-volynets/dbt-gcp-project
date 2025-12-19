@@ -44,23 +44,3 @@ models:
 
       - name: customer_lifetime_days
         description: Days between first and most recent order
-
-  - name: int_customers__cohorts
-    description: >
-      Customer cohort assignments based on first order date.
-      One row per customer with cohort dimensions for retention analysis.
-    columns:
-      - name: customer_id
-        description: Unique customer identifier (primary key)
-        data_tests:
-          - unique
-          - not_null
-
-      - name: cohort_month
-        description: First day of the month when customer placed first order
-
-      - name: cohort_quarter
-        description: First day of the quarter when customer placed first order
-
-      - name: cohort_year
-        description: Year when customer placed first order

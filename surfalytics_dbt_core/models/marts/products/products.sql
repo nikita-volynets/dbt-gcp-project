@@ -1,6 +1,6 @@
 with product_catalog as (
 
-    select * from {{ ref('stg_jaffle_shop__products') }}
+    select * from {{ ref('stg_products') }}
 
 ),
 

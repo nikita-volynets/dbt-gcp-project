@@ -9,7 +9,7 @@ order_items as (
     select
         order_id,
         count(*) as items_in_order
-    from {{ ref('stg_jaffle_shop__order_items') }}
+    from {{ ref('stg_order_items') }}
     group by order_id
 
 ),
