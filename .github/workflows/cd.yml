@@ -63,9 +63,6 @@ jobs:
       - name: Install dbt packages
         run: dbt deps
 
-      - name: Load seed data
-        run: dbt seed --target prod
-
       - name: Build all models and run all tests
         run: |
           echo "🚀 Running full production build..."
