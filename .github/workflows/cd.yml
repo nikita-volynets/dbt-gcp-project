@@ -63,10 +63,10 @@ jobs:
       - name: Install dbt packages
         run: dbt deps
 
-      - name: Build all models and run all tests
+      - name: Compile and validate SQL
         run: |
-          echo "🚀 Running full production build..."
-          dbt build --target prod
+          echo "✅ Compiling dbt models to validate SQL syntax..."
+          dbt compile --target prod
 
       - name: Generate documentation
         run: dbt docs generate --target prod

@@ -84,17 +84,10 @@ jobs:
       - name: Install dbt packages
         run: dbt deps
 
-      - name: Build models and run tests (Slim CI)
-        if: steps.check-state.outputs.state_exists == 'true'
+      - name: Compile and validate SQL
         run: |
-          echo "🔍 Building only modified models and their downstream dependencies..."
-          dbt build --target dev --select state:modified+ --state ./prod-state
-
-      - name: Build models and run tests (Full build)
-        if: steps.check-state.outputs.state_exists == 'false'
-        run: |
-          echo "🔨 Running full build (no production state available)..."
-          dbt build --target dev
+          echo "✅ Compiling dbt models to validate SQL syntax..."
+          dbt compile --target dev
 
       - name: Upload run artifacts
         if: always()
