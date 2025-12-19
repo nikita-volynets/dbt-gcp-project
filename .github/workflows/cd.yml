@@ -38,9 +38,11 @@ jobs:
           pip install dbt-core dbt-bigquery
 
       - name: Authenticate to GCP
+        id: auth
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          create_credentials_file: true
 
       - name: Create profiles.yml
         run: |
@@ -50,7 +52,7 @@ jobs:
             outputs:
               prod:
                 type: bigquery
-                method: service-account-json
+                method: service-account
                 project: dbt-core-gcp-project
                 dataset: analytics
                 threads: 8
@@ -58,14 +60,18 @@ jobs:
                 priority: interactive
                 timeout_seconds: 300
                 retries: 1
+                keyfile: ${{ steps.auth.outputs.credentials_file_path }}
           EOF
 
       - name: Install dbt packages
         run: dbt deps
 
+      - name: dbt debug
+        run: dbt debug --target prod
+
       - name: Compile and validate SQL
         run: |
-          echo "✅ Compiling dbt models to validate SQL syntax..."
+          echo "Compiling dbt models to validate SQL syntax"
           dbt compile --target prod
 
       - name: Generate documentation
@@ -75,7 +81,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dbt-prod-state
-          path: target/manifest.json
+          path: surfalytics_dbt_core/target/manifest.json
           retention-days: 90
 
       - name: Upload documentation artifacts
@@ -83,9 +89,9 @@ jobs:
         with:
           name: dbt-docs
           path: |
-            target/manifest.json
-            target/catalog.json
-            target/index.html
+            surfalytics_dbt_core/target/manifest.json
+            surfalytics_dbt_core/target/catalog.json
+            surfalytics_dbt_core/target/index.html
           retention-days: 30
 
       - name: Upload run results
@@ -93,5 +99,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dbt-prod-run-artifacts
-          path: target/
+          path: surfalytics_dbt_core/target/
           retention-days: 30
