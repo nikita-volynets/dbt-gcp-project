@@ -32,6 +32,10 @@ customer_aggregates as (
         avg(orders.order_total) as avg_order_value,
         avg(order_items.items_in_order) as avg_items_per_order,
 
+        -- dbt-utils: Safe division for calculated metrics
+        {{ dbt_utils.safe_divide('sum(orders.order_total)', 'count(distinct orders.order_id)') }} as safe_avg_order_value,
+        {{ dbt_utils.safe_divide('sum(orders.order_total)', 'sum(order_items.items_in_order)') }} as revenue_per_item,
+
         -- Customer lifetime
         date_diff(
             date(max(orders.ordered_at)),

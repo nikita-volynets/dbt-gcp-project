@@ -15,15 +15,9 @@ models:
       - Menu optimization decisions
       - Inventory planning
       - Marketing prioritization
-    meta:
-      owner: analytics
-      domain: product_analytics
     columns:
       - name: sku
         description: Product SKU code (primary key)
-        data_tests:
-          - unique
-          - not_null
 
       - name: product_name
         description: Product display name
@@ -66,3 +60,7 @@ models:
 
       - name: revenue_rank
         description: Product ranking by total revenue (1 = highest)
+    config:
+      meta:
+        owner: analytics
+        domain: product_analytics

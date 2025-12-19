@@ -1,1 +1,3 @@
 .venv
+surfalytics_dbt_core/profiles.yml
+surfalytics_dbt_core/CLAUDE.md
