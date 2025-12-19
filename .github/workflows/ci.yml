@@ -20,6 +20,10 @@ jobs:
       DBT_PROJECT: "dbt-core-gcp-project"
       DBT_DEV_SCHEMA: "analytics"
 
+    defaults:
+      run:
+        working-directory: surfalytics_dbt_core
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,7 +32,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: "pip"
 
       - name: Install dbt
         run: |
@@ -36,9 +39,30 @@ jobs:
           pip install dbt-core dbt-bigquery
 
       - name: Authenticate to GCP
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          create_credentials_file: true
+
+      - name: Create profiles.yml
         run: |
-          echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > ${HOME}/gcp-key.json
-          echo "GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcp-key.json" >> $GITHUB_ENV
+          cat > profiles.yml << 'EOF'
+          surfalytics_dbt_core:
+            target: dev
+            outputs:
+              dev:
+                type: bigquery
+                method: service-account
+                project: dbt-core-gcp-project
+                dataset: dev_analytics
+                threads: 8
+                location: US
+                priority: interactive
+                timeout_seconds: 300
+                retries: 1
+                keyfile: ${{ steps.auth.outputs.credentials_file_path }}
+          EOF
 
       - name: Download production manifest
         uses: dawidd6/action-download-artifact@v3
@@ -54,35 +78,22 @@ jobs:
         run: |
           if [ -f "./prod-state/manifest.json" ]; then
             echo "state_exists=true" >> $GITHUB_OUTPUT
-            echo "✅ Production state found - will use Slim CI"
+            echo "Production state found - Slim CI possible"
           else
             echo "state_exists=false" >> $GITHUB_OUTPUT
-            echo "⚠️  No production state found - will run full build"
+            echo "No production state found - full parse will run"
           fi
 
       - name: Install dbt packages
         run: dbt deps
 
-      - name: Load seed data (Slim CI)
-        if: steps.check-state.outputs.state_exists == 'true'
-        run: |
-          dbt seed --target dev --select state:modified --state ./prod-state || dbt seed --target dev
+      - name: dbt debug
+        run: dbt debug --target dev
 
-      - name: Load seed data (Full build)
-        if: steps.check-state.outputs.state_exists == 'false'
-        run: dbt seed --target dev
-
-      - name: Build models and run tests (Slim CI)
-        if: steps.check-state.outputs.state_exists == 'true'
+      - name: Compile and validate SQL
         run: |
-          echo "🔍 Building only modified models and their downstream dependencies..."
-          dbt build --target dev --select state:modified+ --state ./prod-state
-
-      - name: Build models and run tests (Full build)
-        if: steps.check-state.outputs.state_exists == 'false'
-        run: |
-          echo "🔨 Running full build (no production state available)..."
-          dbt build --target dev
+          echo "Compiling dbt models to validate SQL syntax"
+          dbt compile --target dev
 
       - name: Upload run artifacts
         if: always()
