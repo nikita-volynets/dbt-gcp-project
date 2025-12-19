@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: jaffle_shop
     description: Raw Jaffle Shop e-commerce data loaded via dbt seeds
-    database: "{{ env_var('DBT_PROJECT') }}"
+    database: "{{ env_var('DBT_PROJECT','dbt-core-gcp-project') }}"
     schema: "{{ target.schema }}_raw_jaffle_shop"
 
     tables:

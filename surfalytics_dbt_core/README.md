@@ -124,15 +124,19 @@ This project follows the **medallion architecture** pattern, organizing data int
 surfalytics_dbt_core/
 ├── models/
 │   ├── staging/
-│   │   └── jaffle_shop/
-│   │       ├── _jaffle_shop__sources.yml       # Source definitions
-│   │       ├── _jaffle_shop__models.yml        # Tests & documentation
-│   │       ├── stg_jaffle_shop__customers.sql
-│   │       ├── stg_jaffle_shop__orders.sql
-│   │       ├── stg_jaffle_shop__order_items.sql
-│   │       ├── stg_jaffle_shop__products.sql
-│   │       ├── stg_jaffle_shop__stores.sql
-│   │       └── stg_jaffle_shop__supplies.sql
+│   │   ├── sources.yml                     # Source definitions
+│   │   ├── stg_customers.sql
+│   │   ├── stg_customers.yml               # Tests & documentation
+│   │   ├── stg_orders.sql
+│   │   ├── stg_orders.yml
+│   │   ├── stg_order_items.sql
+│   │   ├── stg_order_items.yml
+│   │   ├── stg_products.sql
+│   │   ├── stg_products.yml
+│   │   ├── stg_stores.sql
+│   │   ├── stg_stores.yml
+│   │   ├── stg_supplies.sql
+│   │   └── stg_supplies.yml
 │   │
 │   ├── intermediate/
 │   │   ├── orders/
@@ -182,9 +186,9 @@ surfalytics_dbt_core/
 **Why it matters:** Creates a clean, reliable foundation. All downstream models reference staging, not raw sources, ensuring consistency.
 
 **Example models:**
-- `stg_jaffle_shop__orders`: Converts monetary amounts from cents to dollars, renames columns to standard names
-- `stg_jaffle_shop__products`: Standardizes product types to title case, converts pricing
-- `stg_jaffle_shop__customers`: Simplest transformation - just clean column names
+- `stg_orders`: Converts monetary amounts from cents to dollars, renames columns to standard names
+- `stg_products`: Standardizes product types to title case, converts pricing
+- `stg_customers`: Simplest transformation - just clean column names
 
 **Materialization:** Views (keeps data fresh, minimal storage)
 
@@ -439,13 +443,13 @@ This project can answer real-world analytics questions:
 4. Understand how data flows through layers
 
 **Read the SQL:**
-1. Start with a staging model like `stg_jaffle_shop__customers.sql`
+1. Start with a staging model like `stg_customers.sql`
 2. Follow it to an intermediate model like `int_customers__order_aggregates.sql`
 3. End at a mart like `customers.sql`
 4. Notice how complexity builds gradually
 
 **Understand the Tests:**
-1. Open `models/staging/jaffle_shop/_jaffle_shop__models.yml`
+1. Open `models/staging/stg_customers.yml`
 2. See how tests are defined on columns
 3. Run `dbt test` and see results
 4. Try adding your own test
