@@ -55,7 +55,7 @@ jobs:
                 project: ${{ env.DBT_PROJECT }}
                 dataset: dev_${{ env.DBT_DEV_SCHEMA }}
                 threads: 8
-                keyfile: ${HOME}/gcp-key.json
+                keyfile: /home/runner/gcp-key.json
                 location: US
                 priority: interactive
                 timeout_seconds: 300
