@@ -39,23 +39,22 @@ jobs:
           pip install dbt-core dbt-bigquery
 
       - name: Authenticate to GCP
-        run: |
-          echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > ${HOME}/gcp-key.json
-          echo "GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcp-key.json" >> $GITHUB_ENV
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
       - name: Create profiles.yml
         run: |
-          cat > profiles.yml << EOF
+          cat > profiles.yml << 'EOF'
           surfalytics_dbt_core:
             target: dev
             outputs:
               dev:
                 type: bigquery
-                method: service-account
-                project: ${{ env.DBT_PROJECT }}
-                dataset: dev_${{ env.DBT_DEV_SCHEMA }}
+                method: service-account-json
+                project: dbt-core-gcp-project
+                dataset: dev_analytics
                 threads: 8
-                keyfile: /home/runner/gcp-key.json
                 location: US
                 priority: interactive
                 timeout_seconds: 300
