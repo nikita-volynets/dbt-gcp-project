@@ -59,3 +59,19 @@
 [0m16:25:33.839091 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1075ad8e0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x13f3e9820>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x13ea2a270>]}
 [0m16:25:33.839458 [debug] [MainThread]: Flushing usage events
 [0m16:25:34.189283 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m09:01:43.141749 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x109b9dd60>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10adbe750>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10adbe3f0>]}
+
+
+============================== 09:01:43.143845 | 430639f1-d8ee-4eb3-b386-64fadb20e56f ==============================
+[0m09:01:43.143845 [info ] [MainThread]: Running with dbt=1.10.16
+[0m09:01:43.144129 [debug] [MainThread]: running dbt with arguments {'use_colors': 'True', 'warn_error': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'profiles_dir': '/Users/nvolynets/analytics/dbt-gcp-project/surfalytics_dbt_core/', 'no_print': 'None', 'invocation_command': 'dbt build', 'log_path': 'logs', 'target_path': 'None', 'printer_width': '80', 'use_experimental_parser': 'False', 'partial_parse': 'True', 'write_json': 'True', 'fail_fast': 'False', 'quiet': 'False', 'indirect_selection': 'eager', 'version_check': 'True', 'debug': 'False', 'empty': 'False', 'introspect': 'True', 'send_anonymous_usage_stats': 'True', 'log_format': 'default', 'static_parser': 'True', 'log_cache_events': 'False', 'cache_selected_only': 'False'}
+[0m09:01:43.144337 [error] [MainThread]: Encountered an error:
+Runtime Error
+  No dbt_project.yml found at expected path /Users/nvolynets/analytics/dbt-gcp-project/dbt_project.yml
+  Verify that each entry within packages.yml (and their transitive dependencies) contains a file named dbt_project.yml
+  
+[0m09:01:43.145341 [debug] [MainThread]: Resource report: {"command_name": "build", "command_success": false, "command_wall_clock_time": 0.027718958, "process_in_blocks": "0", "process_kernel_time": 0.078481, "process_mem_max_rss": "105988096", "process_out_blocks": "0", "process_user_time": 0.470424}
+[0m09:01:43.145566 [debug] [MainThread]: Command `dbt build` failed at 09:01:43.145526 after 0.03 seconds
+[0m09:01:43.145700 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x109d9c4a0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10abfd1c0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10adbfad0>]}
+[0m09:01:43.145829 [debug] [MainThread]: Flushing usage events
+[0m09:01:43.476075 [debug] [MainThread]: An error was encountered while trying to flush usage events

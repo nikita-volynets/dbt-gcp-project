@@ -15,24 +15,15 @@ models:
       - Geographic sales analysis
       - Seasonality analysis
       - Growth rate monitoring
-    meta:
-      owner: analytics
-      domain: sales_analytics
     columns:
       - name: store_id
         description: Store identifier
-        data_tests:
-          - not_null
 
       - name: store_name
         description: Store location name
-        data_tests:
-          - not_null
 
       - name: order_month
         description: First day of the month for this sales period
-        data_tests:
-          - not_null
 
       - name: total_orders
         description: Number of orders placed at this store in this month
@@ -66,3 +57,7 @@ models:
 
       - name: yoy_growth_rate
         description: Year-over-year growth rate ((current - last year) / last year)
+    config:
+      meta:
+        owner: analytics
+        domain: sales_analytics

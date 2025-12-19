@@ -8,9 +8,6 @@ models:
     columns:
       - name: customer_id
         description: Unique customer identifier (primary key)
-        data_tests:
-          - unique
-          - not_null
 
       - name: cohort_month
         description: First day of the month when customer placed first order

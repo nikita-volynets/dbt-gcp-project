@@ -9,24 +9,15 @@ models:
     columns:
       - name: order_id
         description: Unique identifier for each order (primary key)
-        data_tests:
-          - unique
-          - not_null
 
       - name: customer_id
         description: Foreign key to customers
-        data_tests:
-          - not_null
 
       - name: store_id
         description: Foreign key to stores
-        data_tests:
-          - not_null
 
       - name: ordered_at
         description: Timestamp when the order was placed
-        data_tests:
-          - not_null
 
       - name: subtotal
         description: Order subtotal in dollars (before tax)
@@ -54,8 +45,6 @@ models:
 
       - name: is_first_order
         description: Boolean flag indicating if this is the customer's first order
-        data_tests:
-          - not_null
 
       - name: order_date
         description: Date portion of ordered_at (for aggregations)

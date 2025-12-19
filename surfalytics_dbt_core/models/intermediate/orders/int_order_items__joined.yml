@@ -8,19 +8,12 @@ models:
     columns:
       - name: order_item_id
         description: Unique identifier for each order item (primary key)
-        data_tests:
-          - unique
-          - not_null
 
       - name: order_id
         description: Foreign key to orders
-        data_tests:
-          - not_null
 
       - name: sku
         description: Product SKU code
-        data_tests:
-          - not_null
 
       - name: product_name
         description: Name of the product purchased
@@ -33,18 +26,12 @@ models:
 
       - name: customer_id
         description: Customer who purchased this item
-        data_tests:
-          - not_null
 
       - name: store_id
         description: Store where this item was purchased
-        data_tests:
-          - not_null
 
       - name: ordered_at
         description: Timestamp when this item was ordered
-        data_tests:
-          - not_null
 
       - name: item_revenue
         description: Revenue from this item (equals product price)

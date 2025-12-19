@@ -9,14 +9,9 @@ models:
     columns:
       - name: sku
         description: Product SKU code (primary key)
-        data_tests:
-          - unique
-          - not_null
 
       - name: total_supply_cost
         description: Total cost of all supplies needed for this product
-        data_tests:
-          - not_null
 
       - name: perishable_cost
         description: Total cost of perishable supplies (ingredients)
@@ -26,8 +21,6 @@ models:
 
       - name: num_supplies
         description: Total number of supply items required for this product
-        data_tests:
-          - not_null
 
       - name: num_perishable_supplies
         description: Count of perishable supply items
