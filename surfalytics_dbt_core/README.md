@@ -527,3 +527,6 @@ This project is open source and available for educational purposes.
 ---
 
 **Built with ❤️ for the data community | Powered by dbt Core + BigQuery**
+
+
+==
